@@ -6,24 +6,7 @@ const path = require('path');
 module.exports = {
   name: 'ember-dynamic-render-template',
   included: function() {
-    this._super.included.apply(this, arguments);
-
-    var app;
-
-    // If the addon has the _findHost() method (in ember-cli >= 2.7.0), we'll just
-    // use that.
-    if (typeof this._findHost === 'function') {
-      app = this._findHost();
-    } else {
-      // Otherwise, we'll use this implementation borrowed from the _findHost()
-      // method in ember-cli.
-      var current = this;
-      do {
-        app = current.app || app;
-      } while (current.parent.parent && (current = current.parent));
-    }
-
-    app.import(this.templateCompilerPath());
+    this.import(this.templateCompilerPath());
   },
 
   // borrowed from ember-cli-htmlbars http://git.io/vJDrW
