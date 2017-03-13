@@ -1,4 +1,4 @@
-# ember-dynamic-render-template
+# ember-dynamic-render-template [![Build Status](https://travis-ci.org/miguelcobain/ember-dynamic-render-template.svg?branch=master)](https://travis-ci.org/miguelcobain/ember-dynamic-render-template)
 
 This addon allows you to render from an handlebars string.
 
