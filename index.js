@@ -40,7 +40,7 @@ module.exports = {
     if (ember) {
       return ember.absolutePaths.templateCompiler;
     } else if (!templateCompilerPath) {
-      templateCompilerPath = this.project.bowerDirectory + '/ember/ember-template-compiler';
+      templateCompilerPath = this.project.bowerDirectory + '/ember/ember-template-compiler.js'; // append .js so that app.import doesn't fail
     }
 
     return path.resolve(this.project.root, templateCompilerPath);
