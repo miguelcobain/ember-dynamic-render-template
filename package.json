@@ -3,15 +3,20 @@
   "version": "0.0.0",
   "description": "The default blueprint for ember-cli addons.",
   "keywords": [
-    "ember-addon"
+    "ember-addon",
+    "template",
+    "render"
   ],
   "license": "MIT",
-  "author": "",
+  "author": "Miguel Andrade <jmandrade0@gmail.com>",
   "directories": {
     "doc": "doc",
     "test": "tests"
   },
-  "repository": "",
+  "repository": {
+    "type": "git",
+    "url": "http://github.com/miguelcobain/ember-dynamic-render-template.git"
+  },
   "scripts": {
     "build": "ember build",
     "start": "ember server",
