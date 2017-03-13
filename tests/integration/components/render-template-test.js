@@ -8,7 +8,6 @@ moduleForComponent('render-template', 'Integration | Component | render template
 test('it renders bare text', function(assert) {
   assert.expect(1);
 
-  // Template block usage:
   this.render(hbs`
     {{render-template templateString="abc"}}
   `);
@@ -21,7 +20,6 @@ test('it renders bound values', function(assert) {
 
   this.set('a', 1);
 
-  // Template block usage:
   this.render(hbs`
     {{render-template templateString="{{a}}" props=(hash a=a)}}
   `);
@@ -38,10 +36,25 @@ test('it renders helpers', function(assert) {
 
   this.set('a', 1);
 
-  // Template block usage:
   this.render(hbs`
     {{render-template templateString="{{concat a 2}}" props=(hash a=a)}}
   `);
 
   assert.equal(this.$().text().trim(), '12');
+});
+
+test('rerenders if `templateString` changes', function(assert) {
+  assert.expect(2);
+
+  this.set('templateString', '{{concat 1 2}}');
+
+  this.render(hbs`
+    {{render-template templateString=templateString}}
+  `);
+
+  assert.equal(this.$().text().trim(), '12');
+
+  this.set('templateString', '{{concat 2 1}}');
+
+  assert.equal(this.$().text().trim(), '21');
 });
