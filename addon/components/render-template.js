@@ -6,7 +6,7 @@ export default Component.extend({
   tagName: '',
   layout,
 
-  attrs: {},
+  props: {},
 
   didReceiveAttrs() {
     let owner = getOwner(this);
