@@ -5,7 +5,9 @@ const path = require('path');
 
 module.exports = {
   name: 'ember-dynamic-render-template',
+  
   included: function() {
+    this._super.included.apply(this, arguments);
     this.import(this.templateCompilerPath());
   },
 
