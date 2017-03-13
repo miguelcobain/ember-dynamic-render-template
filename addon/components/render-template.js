@@ -9,8 +9,9 @@ export default Component.extend({
   props: {},
 
   didReceiveAttrs() {
+    this._super(...arguments);
+
     let owner = getOwner(this);
-    let previousComponentName = this.get('componentName');
 
     let component = Component.extend(merge({
       layout: HTMLBars.compile(this.get('templateString'))
@@ -19,11 +20,23 @@ export default Component.extend({
     let componentName = `dynamic-${guidFor(component)}`;
     let componentLookupKey = `component:${componentName}`;
 
-    if (previousComponentName) {
-      owner.unregister(`component:${previousComponentName}`);
-    }
+    this.unregisterIfExistent();
     owner.register(componentLookupKey, component);
 
     this.set('componentName', componentName);
+  },
+
+  willDestroyElement() {
+    this._super(...arguments);
+    this.unregisterIfExistent();
+  },
+
+  unregisterIfExistent() {
+    let owner = getOwner(this);
+    let previousComponentName = this.get('componentName');
+    if (previousComponentName) {
+      owner.unregister(`component:${previousComponentName}`);
+    }
   }
+
 });
