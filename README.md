@@ -2,8 +2,9 @@
 
 This addon allows you to render from an handlebars string.
 
-NOTE1: This is an experimental addon, mostly used for creating interactive examples.
-NOTE2: This will include the handlebars compiler in your app.
+**NOTE1:** This is an experimental addon, mostly used for creating interactive examples.
+
+**NOTE2:** This will include the handlebars compiler in your app.
 
 ## Usage
 
