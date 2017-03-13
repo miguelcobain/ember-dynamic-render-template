@@ -1,6 +1,6 @@
 import Ember from 'ember';
 import layout from '../templates/components/render-template';
-const { Component, getOwner, HTMLBars, guidFor, assign } = Ember;
+const { Component, getOwner, HTMLBars, guidFor, merge } = Ember;
 
 export default Component.extend({
   tagName: '',
@@ -11,7 +11,7 @@ export default Component.extend({
   didReceiveAttrs() {
     let owner = getOwner(this);
 
-    let component = Component.extend(assign({
+    let component = Component.extend(merge({
       layout: HTMLBars.compile(this.get('templateString'))
     }, this.get('props')));
 
