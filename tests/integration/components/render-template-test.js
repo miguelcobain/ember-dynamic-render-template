@@ -58,3 +58,35 @@ test('rerenders if `templateString` changes', function(assert) {
 
   assert.equal(this.$().text().trim(), '21');
 });
+
+test('works when `templateString` has invalid/empty helper specified', function(assert) {
+  assert.expect(6);
+
+  this.set('templateString', '{{add 1 2}}');
+
+  this.render(hbs`
+    {{render-template templateString=templateString}}
+  `);
+
+  assert.equal(this.$().text().trim(), '3');
+
+  // Start deleting characters
+  this.set('templateString', '{{ad 1 2}}');
+  assert.equal(this.$().text().trim(), '3');
+
+  // Empty string helper name
+  this.set('templateString', '{{ 1 2}}');
+  assert.equal(this.$().text().trim(), '2');
+
+  // No helper name
+  this.set('templateString', '{{2 1}}');
+  assert.equal(this.$().text().trim(), '2');
+
+  // Start typing sub helper
+  this.set('templateString', '{{su 2 1}}');
+  assert.equal(this.$().text().trim(), '1');
+
+  // Full sub helper
+  this.set('templateString', '{{sub 2 1}}');
+  assert.equal(this.$().text().trim(), '1');
+});
