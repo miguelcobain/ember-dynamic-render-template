@@ -1,1 +1,2 @@
-{{render-template templateString="value: {{a}}" props=(hash a=1)}}
+<textarea oninput={{action (mut templateString) value="target.value"}}></textarea>
+{{render-template templateString=templateString}}

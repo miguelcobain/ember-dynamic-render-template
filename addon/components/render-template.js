@@ -1,6 +1,6 @@
 import Ember from 'ember';
 import layout from '../templates/components/render-template';
-const { Component, getOwner, HTMLBars, guidFor, merge } = Ember;
+const { Component, getOwner, HTMLBars, setOwner, run } = Ember;
 
 export default Component.extend({
   tagName: '',
@@ -11,32 +11,22 @@ export default Component.extend({
   didReceiveAttrs() {
     this._super(...arguments);
 
-    let owner = getOwner(this);
+    run.schedule('sync', () => {
+      let owner = getOwner(this);
 
-    let component = Component.extend(merge({
-      layout: HTMLBars.compile(this.get('templateString'))
-    }, this.get('props')));
+      let component = Component.extend({
+        layout: HTMLBars.compile(this.get('templateString') || ''),
+        renderer: owner.lookup('renderer:-dom')
+      });
 
-    let componentName = `dynamic-${guidFor(component)}`;
-    let componentLookupKey = `component:${componentName}`;
+      let componentInstance = component.create(this.get('props'));
+      setOwner(componentInstance, owner);
 
-    this.unregisterIfExistent();
-    owner.register(componentLookupKey, component);
+      let container = document.createElement('div');
+      componentInstance.appendTo(container);
 
-    this.set('componentName', componentName);
-  },
-
-  willDestroyElement() {
-    this._super(...arguments);
-    this.unregisterIfExistent();
-  },
-
-  unregisterIfExistent() {
-    let owner = getOwner(this);
-    let previousComponentName = this.get('componentName');
-    if (previousComponentName) {
-      owner.unregister(`component:${previousComponentName}`);
-    }
+      this.set('result', container);
+    });
   }
 
 });
