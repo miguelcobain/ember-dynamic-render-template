@@ -1,60 +1,62 @@
-import { moduleForComponent, test } from 'ember-qunit';
+import { module, test } from 'qunit';
+import { setupRenderingTest } from 'ember-qunit';
+import { render } from '@ember/test-helpers';
 import hbs from 'htmlbars-inline-precompile';
 
-moduleForComponent('render-template', 'Integration | Component | render template', {
-  integration: true
-});
+module('Integration | Component | render template', function(hooks) {
+  setupRenderingTest(hooks);
 
-test('it renders bare text', function(assert) {
-  assert.expect(1);
+  test('it renders bare text', async function(assert) {
+    assert.expect(1);
 
-  this.render(hbs`
-    {{render-template templateString="abc"}}
-  `);
+    await render(hbs`
+      {{render-template templateString="abc"}}
+    `);
 
-  assert.equal(this.$().text().trim(), 'abc');
-});
+    assert.dom('*').hasText('abc');
+  });
 
-test('it renders bound values', function(assert) {
-  assert.expect(2);
+  test('it renders bound values', async function(assert) {
+    assert.expect(2);
 
-  this.set('a', 1);
+    this.set('a', 1);
 
-  this.render(hbs`
-    {{render-template templateString="{{a}}" props=(hash a=a)}}
-  `);
+    await render(hbs`
+      {{render-template templateString="{{a}}" props=(hash a=a)}}
+    `);
 
-  assert.equal(this.$().text().trim(), '1');
+    assert.dom('*').hasText('1');
 
-  this.set('a', 2);
+    await this.set('a', 2);
 
-  assert.equal(this.$().text().trim(), '2');
-});
+    assert.dom('*').hasText('2');
+  });
 
-test('it renders helpers', function(assert) {
-  assert.expect(1);
+  test('it renders helpers', async function(assert) {
+    assert.expect(1);
 
-  this.set('a', 1);
+    this.set('a', 1);
 
-  this.render(hbs`
-    {{render-template templateString="{{concat a 2}}" props=(hash a=a)}}
-  `);
+    await render(hbs`
+      {{render-template templateString="{{concat a 2}}" props=(hash a=a)}}
+    `);
 
-  assert.equal(this.$().text().trim(), '12');
-});
+    assert.dom('*').hasText('12');
+  });
 
-test('rerenders if `templateString` changes', function(assert) {
-  assert.expect(2);
+  test('rerenders if `templateString` changes', async function(assert) {
+    assert.expect(2);
 
-  this.set('templateString', '{{concat 1 2}}');
+    this.set('templateString', '{{concat 1 2}}');
 
-  this.render(hbs`
-    {{render-template templateString=templateString}}
-  `);
+    await render(hbs`
+      {{render-template templateString=templateString}}
+    `);
 
-  assert.equal(this.$().text().trim(), '12');
+    assert.dom('*').hasText('12');
 
-  this.set('templateString', '{{concat 2 1}}');
+    this.set('templateString', '{{concat 2 1}}');
 
-  assert.equal(this.$().text().trim(), '21');
+    assert.dom('*').hasText('21');
+  });
 });

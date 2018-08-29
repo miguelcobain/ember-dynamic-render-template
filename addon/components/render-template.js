@@ -1,32 +1,36 @@
-import Ember from 'ember';
+import Component from '@ember/component';
+import { setOwner, getOwner } from '@ember/application';
+import { once } from '@ember/runloop';
+import { compileTemplate } from '@ember/template-compilation';
+import { assign } from '@ember/polyfills';
 import layout from '../templates/components/render-template';
-const { Component, getOwner, HTMLBars, setOwner, run } = Ember;
+
 
 export default Component.extend({
   tagName: '',
   layout,
 
-  props: {},
+  props: null,
 
   didReceiveAttrs() {
     this._super(...arguments);
 
-    run.schedule('sync', () => {
+    once(this, function () {
       let owner = getOwner(this);
+      let _props = this.get('props') || {};
 
-      let component = Component.extend({
-        layout: HTMLBars.compile(this.get('templateString') || ''),
-        renderer: owner.lookup('renderer:-dom')
+      let props = assign({}, _props, {
+        layout: compileTemplate(this.get('templateString') || ''),
       });
 
-      let componentInstance = component.create(this.get('props'));
-      setOwner(componentInstance, owner);
-
+      let ComponentFactory = owner.factoryFor('component:render-template-result');
+      let componentInstance = ComponentFactory.create(props);
       let container = document.createElement('div');
+
+      setOwner(componentInstance, owner);
       componentInstance.appendTo(container);
 
       this.set('result', container);
     });
   }
-
 });
