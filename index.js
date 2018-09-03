@@ -5,7 +5,7 @@ const path = require('path');
 
 module.exports = {
   name: 'ember-dynamic-render-template',
-  
+
   included: function() {
     this._super.included.apply(this, arguments);
     this.import(this.templateCompilerPath());
@@ -22,12 +22,19 @@ module.exports = {
     let templateCompilerPath = config['ember-cli-htmlbars'] && config['ember-cli-htmlbars'].templateCompilerPath;
 
     let ember = this.project.findAddonByName('ember-source');
+
     if (ember) {
       return ember.absolutePaths.templateCompiler;
     } else if (!templateCompilerPath) {
-      templateCompilerPath = this.project.bowerDirectory + '/ember/ember-template-compiler.js'; // append .js so that app.import doesn't fail
+      templateCompilerPath = this.project.bowerDirectory + '/ember/ember-template-compiler';
     }
 
-    return path.resolve(this.project.root, templateCompilerPath);
+    let absolutePath = path.resolve(this.project.root, templateCompilerPath);
+
+    if (path.extname(absolutePath) === '') {
+      absolutePath += '.js';
+    }
+
+    return absolutePath;
   }
 };

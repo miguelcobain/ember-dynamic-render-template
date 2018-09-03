@@ -1,2 +1,15 @@
-<textarea oninput={{action (mut templateString) value="target.value"}}></textarea>
-{{render-template templateString=templateString}}
+<p>
+  <label for="template-string">Literal value</label>
+  <div>
+    <textarea id="template-string" oninput={{action (mut templateString) value="target.value"}}></textarea>
+    {{render-template templateString=templateString}}
+  </div>
+</p>
+
+<p>
+  <label for="hash-property">Hash property</label>
+  <div>
+    <textarea id="hash-property" oninput={{action (mut propA) value="target.value"}}></textarea>
+    {{render-template templateString="{{a}}" props=(hash a=propA)}}
+  </div>
+</p>
