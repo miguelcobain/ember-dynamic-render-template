@@ -1,40 +1,35 @@
-/* jshint node: true */
 'use strict';
 
+const Funnel = require('broccoli-funnel');
+const MergeTrees = require('broccoli-merge-trees');
 const path = require('path');
+const resolve = require('resolve');
 
 module.exports = {
   name: 'ember-dynamic-render-template',
 
-  included: function() {
+  included() {
     this._super.included.apply(this, arguments);
-    this.import(this.templateCompilerPath());
+    this.import(`${this._hasEmberSource() ? 'vendor' : 'bower_components'}/ember/ember-template-compiler.js`);
   },
 
-  // borrowed from ember-cli-htmlbars http://git.io/vJDrW
-  projectConfig() {
-    return this.project.config(process.env.EMBER_ENV);
+  treeForVendor(vendor) {
+    return new MergeTrees([
+      vendor,
+      this._templateCompilerTree()
+    ].filter(Boolean));
   },
 
-  // borrowed from ember-cli-htmlbars http://git.io/vJDrw
-  templateCompilerPath() {
-    let config = this.projectConfig();
-    let templateCompilerPath = config['ember-cli-htmlbars'] && config['ember-cli-htmlbars'].templateCompilerPath;
+  _hasEmberSource() {
+    return 'ember-source' in this.project.pkg.devDependencies;
+  },
 
-    let ember = this.project.findAddonByName('ember-source');
-
-    if (ember) {
-      return ember.absolutePaths.templateCompiler;
-    } else if (!templateCompilerPath) {
-      templateCompilerPath = this.project.bowerDirectory + '/ember/ember-template-compiler';
+  _templateCompilerTree() {
+    if (this._hasEmberSource()) {
+      return new Funnel(path.dirname(resolve.sync('ember-source/package.json'), { basedir: this.project.root }), {
+        srcDir: 'dist',
+        destDir: 'ember'
+      });
     }
-
-    let absolutePath = path.resolve(this.project.root, templateCompilerPath);
-
-    if (path.extname(absolutePath) === '') {
-      absolutePath += '.js';
-    }
-
-    return absolutePath;
-  }
+  },
 };
