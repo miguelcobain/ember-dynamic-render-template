@@ -18,6 +18,7 @@ export default Component.extend({
     once(this, function () {
       let owner = getOwner(this);
       let _props = this.get('props') || {};
+      let domForAppWithGlimmer2 = owner.lookup('service:-document');
 
       let props = assign({}, _props, {
         layout: compileTemplate(this.get('templateString') || ''),
@@ -25,7 +26,13 @@ export default Component.extend({
 
       let ComponentFactory = owner.factoryFor('component:render-template-result');
       let componentInstance = ComponentFactory.create(props);
-      let container = document.createElement('div');
+      let container;
+
+      if (domForAppWithGlimmer2) {
+        container = domForAppWithGlimmer2.createElement('div');
+      } else {
+        container = document.createElement('div');
+      }
 
       setOwner(componentInstance, owner);
       componentInstance.appendTo(container);
